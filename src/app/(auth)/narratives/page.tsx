@@ -13,7 +13,7 @@ export default async function NarrativesPage({
 }) {
   const { projectId } = await searchParams;
   const user = await getAuthenticatedUser();
-  if (!user) redirect("/");
+  if (!user) redirect("/login");
 
   // If no projectId, get the first project available
   let targetProjectId = projectId;

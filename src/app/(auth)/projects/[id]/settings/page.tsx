@@ -12,7 +12,7 @@ export default async function ProjectSettingsPage({
 }) {
   const { id } = await params;
   const user = await getAuthenticatedUser();
-  if (!user) redirect("/");
+  if (!user) redirect("/login");
 
   const project = await projectService.getProjectById(id, user.uid);
   if (!project) notFound();

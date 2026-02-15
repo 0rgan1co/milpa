@@ -27,6 +27,12 @@ export default function Home() {
 
         <div className="flex flex-wrap gap-3">
           <Link
+            href="/login"
+            className="inline-flex items-center rounded-full border border-slate-700 px-5 py-3 text-sm font-semibold text-slate-100 transition hover:border-slate-500"
+          >
+            Sign In
+          </Link>
+          <Link
             href="/dashboard"
             className="inline-flex items-center gap-2 rounded-full bg-emerald-400 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-emerald-300"
           >
@@ -69,7 +75,7 @@ export default function Home() {
         </div>
 
         <p className="text-sm text-slate-400">
-          Note: authenticated routes require a valid Firebase session cookie.
+          Note: sign in first to access protected dashboards.
         </p>
       </section>
     </main>
