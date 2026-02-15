@@ -22,11 +22,19 @@ export default async function LoginPage() {
         </CardHeader>
         <CardContent className="space-y-4">
           <LoginForm />
-          <p className="text-center text-sm text-slate-400">
-            <Link href="/" className="underline underline-offset-4">
-              Back to home
-            </Link>
-          </p>
+          <div className="space-y-2 text-center text-sm text-slate-400">
+            <p>
+              Don&apos;t have an account?{" "}
+              <Link href="/signup" className="underline underline-offset-4">
+                Create one
+              </Link>
+            </p>
+            <p>
+              <Link href="/" className="underline underline-offset-4">
+                Back to home
+              </Link>
+            </p>
+          </div>
         </CardContent>
       </Card>
     </main>

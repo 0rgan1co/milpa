@@ -27,6 +27,12 @@ export default function Home() {
 
         <div className="flex flex-wrap gap-3">
           <Link
+            href="/signup"
+            className="inline-flex items-center rounded-full border border-emerald-400/40 px-5 py-3 text-sm font-semibold text-emerald-300 transition hover:border-emerald-300"
+          >
+            Create Account
+          </Link>
+          <Link
             href="/login"
             className="inline-flex items-center rounded-full border border-slate-700 px-5 py-3 text-sm font-semibold text-slate-100 transition hover:border-slate-500"
           >
