@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAdminAuth } from "@/server/auth/firebase-admin";
 
-<<<<<<< HEAD
 // 5 days
-=======
->>>>>>> origin/main
 const SESSION_MAX_AGE = 60 * 60 * 24 * 5;
 
 export async function POST(request: NextRequest) {
@@ -16,20 +13,13 @@ export async function POST(request: NextRequest) {
     }
 
     const adminAuth = getAdminAuth();
-<<<<<<< HEAD
 
     // Create the session cookie. This will also verify the ID token.
-=======
->>>>>>> origin/main
     const sessionCookie = await adminAuth.createSessionCookie(idToken, {
       expiresIn: SESSION_MAX_AGE * 1000,
     });
 
     const response = NextResponse.json({ ok: true });
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/main
     response.cookies.set({
       name: "session",
       value: sessionCookie,
