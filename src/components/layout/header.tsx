@@ -2,8 +2,14 @@
 
 import { Bell, Search, UserCircle } from "lucide-react";
 import { ThemeToggle } from "./theme-toggle";
+import { Button } from "@/components/ui/button";
 
 export function Header() {
+  async function handleLogout() {
+    await fetch("/api/auth/logout", { method: "POST" });
+    window.location.href = "/login";
+  }
+
   return (
     <header className="flex items-center justify-between h-16 px-6 bg-background border-b border-border">
       <div className="flex items-center flex-1">
@@ -25,6 +31,9 @@ export function Header() {
           <UserCircle className="h-8 w-8 text-muted-foreground" />
           <span className="text-sm font-medium">Admin User</span>
         </div>
+        <Button variant="outline" size="sm" onClick={handleLogout}>
+          Sign out
+        </Button>
       </div>
     </header>
   );

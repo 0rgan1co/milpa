@@ -26,7 +26,7 @@ export default async function DashboardPage({
 }) {
   const { projectId } = await searchParams;
   const user = await getAuthenticatedUser();
-  if (!user) redirect("/");
+  if (!user) redirect("/login");
 
   // Get active project
   let targetProjectId = projectId;

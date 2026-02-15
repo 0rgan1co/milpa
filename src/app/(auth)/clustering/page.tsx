@@ -13,7 +13,7 @@ export default async function ClusteringPage({
 }) {
   const { projectId, runId } = await searchParams;
   const user = await getAuthenticatedUser();
-  if (!user) redirect("/");
+  if (!user) redirect("/login");
 
   // Get active project
   let targetProjectId = projectId;
