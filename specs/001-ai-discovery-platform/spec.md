@@ -7,7 +7,8 @@
 
 ## Assumptions
 
-- **Authentication**: Email-based for Admin/Consultant; anonymous token-based links for Employee interviewees; email-based read-only for Viewers.
+- **Authentication**: Public self-registration via Email/Password or Google OAuth for Admin/Consultant; anonymous token-based links for Employee interviewees; email-based read-only for Viewers.
+- **Roles**: User permissions (Admin, Viewer) are scoped per project. A user can be an Admin on one project and a Viewer on another.
 - **Data Retention**: Interview data retained for the lifetime of the project unless the Admin explicitly deletes it.
 - **Anonymization**: Automatic name/entity redaction applied to narratives post-extraction. Original transcripts stored separately with restricted access.
 - **Language**: MVP supports Spanish (primary) and English. All AI-generated content respects the project's configured language.
@@ -181,7 +182,7 @@ The Admin generates a shareable read-only link for a project's dashboard or spec
 
 **Dashboard & Analytics**
 
-- **FR-027**: System MUST display a project dashboard with summary metrics: total interviews, total narratives, cluster count, average sentiment, participation rate.
+- **FR-027**: System MUST display a project dashboard using a "Sidebar + Single View" layout. The sidebar provides navigation between primary views: "Overview" (Metrics), "Semantic Map", "Heatmap", and "Analytic Chat". Only one major visualization is active at a time to maximize screen real estate.
 - **FR-028**: System MUST display an interactive semantic map of clusters with zoom, pan, and click-to-detail functionality.
 - **FR-029**: System MUST display a sentiment heatmap filterable by demographic categories.
 - **FR-030**: System MUST provide an analytic chat where Admins can query narratives and clusters in natural language.
@@ -192,9 +193,12 @@ The Admin generates a shareable read-only link for a project's dashboard or spec
 
 - **FR-032**: System MUST allow Admins to generate shareable read-only links with optional expiration dates.
 - **FR-033**: System MUST provide Viewers with read-only access to dashboards, semantic maps, cluster details, and analytic chat.
-- **FR-034**: System MUST support three user roles: Admin (full access), Employee (interview-only via anonymous link), Viewer (read-only dashboard access).
+- FR-034: System MUST support project-level permissions where a user can have different roles (Admin, Viewer) across different projects. "Employee" remains an anonymous role scoped to a specific interview link.
 - **FR-044**: System MUST allow project owners to add other Admins as collaborators on a project. Collaborators have full edit access; only the owner can delete the project.
 - **FR-045**: System MUST support configuring a primary and a fallback AI provider. If the primary provider fails (after 3 retries with exponential backoff), the system MUST automatically attempt the operation with the fallback provider before surfacing an error.
+
+- FR-046: System MUST allow new users to self-register as Admins using Email/Password or Google OAuth.
+- FR-047: System MUST provide a password reset flow via email link.
 
 **Privacy & Anonymization**
 
@@ -248,3 +252,6 @@ The Admin generates a shareable read-only link for a project's dashboard or spec
 - Q: What is the default expiration period for invitations? → A: No expiration by default; Admin can optionally set an expiration date per invitation.
 - Q: Can multiple Admins collaborate on a single project? → A: Yes, Owner + Collaborator model. Owner can delete project; collaborators have full edit access.
 - Q: How should the system handle AI provider failures across all AI-dependent features? → A: Primary + fallback provider. System auto-switches to fallback provider if primary fails; errors surface only if both fail.
+- Q: How do Admins (Consultants) acquire an account? → A: Public Self-Registration via Email/Password or Google.
+- Q: How are user permissions scoped? → A: Project-Level Permissions (User roles like Admin/Viewer are specific to each project, not global to the user account).
+- Q: How should the dashboard be visually structured? → A: Sidebar + Single View (Tabs for Map vs Heatmap vs Metrics).

@@ -8,7 +8,7 @@ import {
   signInWithPopup,
 } from "firebase/auth";
 import { FirebaseError } from "firebase/app";
-import { auth } from "@/lib/firebase";
+import { getClientAuth } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -49,6 +49,7 @@ export function SignupForm() {
     setIsSubmitting(true);
 
     try {
+      const auth = getClientAuth();
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
@@ -89,6 +90,7 @@ export function SignupForm() {
     setIsSubmitting(true);
 
     try {
+      const auth = getClientAuth();
       const provider = new GoogleAuthProvider();
       provider.setCustomParameters({ prompt: "select_account" });
       const userCredential = await signInWithPopup(auth, provider);
@@ -100,6 +102,9 @@ export function SignupForm() {
       router.refresh();
     } catch (err) {
       if (err instanceof FirebaseError) {
+        if (err.code === "auth/popup-closed-by-user") {
+          return;
+        }
         setError(`Google sign up failed (${err.code}).`);
       } else {
         setError("Google sign up failed.");

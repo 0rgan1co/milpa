@@ -99,6 +99,8 @@ _Spec-Kit/OpenCode commands:_
   - RTI and clustering flows with at least one E2E "happy path" and one network failure test.
 
 ## Recent Changes
+- 001-ai-discovery-platform: Added [if applicable, e.g., PostgreSQL, CoreData, files or N/A]
+- 001-ai-discovery-platform: Added [if applicable, e.g., PostgreSQL, CoreData, files or N/A]
 
 1. **Phase 1 Plan Complete – 2026-02-15**
    - Generated research.md (technology decisions), data-model.md (Drizzle schema for 9 entities with pgvector), api-spec.md (Server Actions + Route Handlers mapped to 45 FRs), and quickstart.md.

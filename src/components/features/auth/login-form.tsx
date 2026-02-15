@@ -8,7 +8,7 @@ import {
   signInWithPopup,
 } from "firebase/auth";
 import { FirebaseError } from "firebase/app";
-import { auth } from "@/lib/firebase";
+import { getClientAuth } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -37,6 +37,7 @@ export function LoginForm() {
     setIsSubmitting(true);
 
     try {
+      const auth = getClientAuth();
       const userCredential = await signInWithEmailAndPassword(
         auth,
         email,
@@ -53,7 +54,8 @@ export function LoginForm() {
         const code = err.code;
         if (
           code === "auth/invalid-credential" ||
-          code === "auth/user-not-found"
+          code === "auth/user-not-found" ||
+          code === "auth/wrong-password"
         ) {
           setError("Invalid email or password.");
         } else if (code === "auth/unauthorized-domain") {
@@ -76,6 +78,7 @@ export function LoginForm() {
     setIsSubmitting(true);
 
     try {
+      const auth = getClientAuth();
       const provider = new GoogleAuthProvider();
       provider.setCustomParameters({ prompt: "select_account" });
       const userCredential = await signInWithPopup(auth, provider);
@@ -87,6 +90,10 @@ export function LoginForm() {
       router.refresh();
     } catch (err) {
       if (err instanceof FirebaseError) {
+        if (err.code === "auth/popup-closed-by-user") {
+          // Ignore
+          return;
+        }
         setError(`Google sign in failed (${err.code}).`);
       } else {
         setError("Google sign in failed.");
