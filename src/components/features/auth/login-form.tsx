@@ -2,7 +2,12 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import {
+  GoogleAuthProvider,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+} from "firebase/auth";
+import { FirebaseError } from "firebase/app";
 import { auth } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,6 +18,18 @@ export function LoginForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  async function createSession(idToken: string) {
+    const response = await fetch("/api/auth/session", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ idToken }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to create authenticated session");
+    }
+  }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -27,20 +44,53 @@ export function LoginForm() {
       );
       const idToken = await userCredential.user.getIdToken(true);
 
-      const response = await fetch("/api/auth/session", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ idToken }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to create authenticated session");
-      }
+      await createSession(idToken);
 
       router.push("/dashboard");
       router.refresh();
-    } catch {
-      setError("Invalid credentials or session setup failed.");
+    } catch (err) {
+      if (err instanceof FirebaseError) {
+        const code = err.code;
+        if (
+          code === "auth/invalid-credential" ||
+          code === "auth/user-not-found"
+        ) {
+          setError("Invalid email or password.");
+        } else if (code === "auth/unauthorized-domain") {
+          setError("This domain is not authorized in Firebase Auth settings.");
+        } else if (code === "auth/invalid-api-key") {
+          setError("Invalid Firebase API key in environment variables.");
+        } else {
+          setError(`Sign in failed (${code}).`);
+        }
+      } else {
+        setError("Invalid credentials or session setup failed.");
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
+  async function handleGoogleSignIn() {
+    setError(null);
+    setIsSubmitting(true);
+
+    try {
+      const provider = new GoogleAuthProvider();
+      provider.setCustomParameters({ prompt: "select_account" });
+      const userCredential = await signInWithPopup(auth, provider);
+      const idToken = await userCredential.user.getIdToken(true);
+
+      await createSession(idToken);
+
+      router.push("/dashboard");
+      router.refresh();
+    } catch (err) {
+      if (err instanceof FirebaseError) {
+        setError(`Google sign in failed (${err.code}).`);
+      } else {
+        setError("Google sign in failed.");
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -82,6 +132,23 @@ export function LoginForm() {
 
       <Button type="submit" className="w-full" disabled={isSubmitting}>
         {isSubmitting ? "Signing in..." : "Sign in"}
+      </Button>
+
+      <div className="relative py-2">
+        <div className="border-t border-slate-700" />
+        <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 px-2 text-xs text-slate-400">
+          or
+        </span>
+      </div>
+
+      <Button
+        type="button"
+        variant="outline"
+        className="w-full"
+        onClick={handleGoogleSignIn}
+        disabled={isSubmitting}
+      >
+        Continue with Google
       </Button>
     </form>
   );
